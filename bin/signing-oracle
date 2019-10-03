@@ -1,0 +1,41 @@
+#!/usr/bin/env php
+<?php
+
+use Drupal\SigningOracle\SigningOracleApplication;
+use GetOpt\ArgumentException;
+use GetOpt\GetOpt;
+use GetOpt\Option;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$options = new GetOpt();
+$options->addOption(
+    (new Option('c', 'config', Getopt::REQUIRED_ARGUMENT))
+        ->setDescription('Path to the configuration file')
+        ->setDefaultValue('config.yml')
+);
+
+$options->addOption(
+    (new Option('h', 'help', Getopt::NO_ARGUMENT))
+        ->setDescription('Show this help and quit')
+);
+
+$showhelp = false;
+try {
+    $options->process();
+} catch (ArgumentException $e) {
+    file_put_contents('php://stderr', $e->getMessage() . PHP_EOL);
+    $showhelp = 1;
+}
+
+if ($options->getOption('help')) {
+    $showhelp = 0;
+}
+
+if (is_int($showhelp)) {
+    echo $options->getHelpText();
+    exit($showhelp);
+}
+
+$app = new SigningOracleApplication($options);
+$app->run();
