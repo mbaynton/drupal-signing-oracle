@@ -5,6 +5,12 @@ signing:
     int-private-key-file: /home/mpantheon/projects/drupal/infra/signing-oracle/tests/Fixtures/intermediate.sec
     int-xpub-key-file: /home/mpantheon/projects/drupal/infra/signing-oracle/tests/Fixtures/intermediate.xpub
 
+messaging:
+  stomp:
+    brokerUri: ssl://b-ff20c86a-a4f6-4ce0-81d7-09709cbef30d-1.mq.us-east-2.amazonaws.com:61614
+    username: fred
+    password: tuttle
+    request-queue-name: SigningRequests
 
 sqs:
   region: us-east-2

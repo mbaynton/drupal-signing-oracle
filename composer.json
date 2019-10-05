@@ -4,10 +4,11 @@
     "type": "project",
     "require": {
         "pimple/pimple": "^3.2",
-        "ext-sodium": "^7.2",
         "symfony/yaml": "^4.3",
         "ulrichsg/getopt-php": "3.2.2",
-        "mekras/php-systemd": "0.1.0"
+        "mekras/php-systemd": "0.1.0",
+        "stomp-php/stomp-php": "^4.5",
+        "ext-json": "^1.6"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.3"
@@ -24,6 +25,5 @@
             "email": "mike@mbaynton.com"
         }
     ],
-    "minimum-stability": "dev",
     "prefer-stable": true
 }

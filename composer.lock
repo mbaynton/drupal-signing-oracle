@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a0ecffc1c87370802b1786cf6b9813ab",
+    "content-hash": "f252ab39950c79991320c969a8f7e2f5",
     "packages": [
         {
             "name": "mekras/php-systemd",
@@ -150,6 +150,65 @@
                 "psr"
             ],
             "time": "2017-02-14T16:28:37+00:00"
+        },
+        {
+            "name": "stomp-php/stomp-php",
+            "version": "4.5.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stomp-php/stomp-php.git",
+                "reference": "9238e4ddb1e7a5ddd673d090be52bdf9d7f225be"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stomp-php/stomp-php/zipball/9238e4ddb1e7a5ddd673d090be52bdf9d7f225be",
+                "reference": "9238e4ddb1e7a5ddd673d090be52bdf9d7f225be",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Stomp\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Dejan Bosnanac",
+                    "email": "dejan@nighttale.net",
+                    "homepage": "http://www.nighttale.net"
+                },
+                {
+                    "name": "Sören Rohweder",
+                    "email": "s.rohweder@blage.net",
+                    "homepage": "http://www.monofone.de"
+                },
+                {
+                    "name": "Jens Radtke",
+                    "email": "swefl@fin-sn.de",
+                    "homepage": "http://www.fin-sn.de"
+                }
+            ],
+            "description": "stomp support for PHP",
+            "homepage": "http://github.com/stomp-php/stomp-php",
+            "keywords": [
+                "activeMQ",
+                "apollomq",
+                "jms",
+                "messaging",
+                "rabbitmq",
+                "stomp"
+            ],
+            "time": "2019-07-26T16:38:20+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -674,22 +733,22 @@
         },
         {
             "name": "phpspec/prophecy",
-            "version": "1.8.1",
+            "version": "1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "1927e75f4ed19131ec9bcc3b002e07fb1173ee76"
+                "reference": "f6811d96d97bdf400077a0cc100ae56aa32b9203"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/1927e75f4ed19131ec9bcc3b002e07fb1173ee76",
-                "reference": "1927e75f4ed19131ec9bcc3b002e07fb1173ee76",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/f6811d96d97bdf400077a0cc100ae56aa32b9203",
+                "reference": "f6811d96d97bdf400077a0cc100ae56aa32b9203",
                 "shasum": ""
             },
             "require": {
                 "doctrine/instantiator": "^1.0.2",
                 "php": "^5.3|^7.0",
-                "phpdocumentor/reflection-docblock": "^2.0|^3.0.2|^4.0",
+                "phpdocumentor/reflection-docblock": "^2.0|^3.0.2|^4.0|^5.0",
                 "sebastian/comparator": "^1.1|^2.0|^3.0",
                 "sebastian/recursion-context": "^1.0|^2.0|^3.0"
             },
@@ -733,7 +792,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2019-06-13T12:50:23+00:00"
+            "time": "2019-10-03T11:07:50+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -989,16 +1048,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.3.5",
+            "version": "8.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "302faed7059fde575cf3403a78c730c5e3a62750"
+                "reference": "57e5e77b62086033528ee1f4063ae03035f57894"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/302faed7059fde575cf3403a78c730c5e3a62750",
-                "reference": "302faed7059fde575cf3403a78c730c5e3a62750",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/57e5e77b62086033528ee1f4063ae03035f57894",
+                "reference": "57e5e77b62086033528ee1f4063ae03035f57894",
                 "shasum": ""
             },
             "require": {
@@ -1042,7 +1101,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "8.3-dev"
+                    "dev-master": "8.4-dev"
                 }
             },
             "autoload": {
@@ -1068,7 +1127,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-09-14T09:12:03+00:00"
+            "time": "2019-10-04T03:12:25+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -1777,12 +1836,12 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "ext-sodium": "^7.2"
+        "ext-json": "^1.6"
     },
     "platform-dev": []
 }

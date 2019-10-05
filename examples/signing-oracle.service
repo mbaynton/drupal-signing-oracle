@@ -1,0 +1,13 @@
+[Unit]
+Description=Drupal code signing oracle
+
+[Service]
+Type=simple
+ExecStart=/home/mpantheon/projects/drupal/infra/signing-oracle/bin/signing-oracle -c /home/mpantheon/projects/drupal/infra/signing-oracle/config.yml
+User=mpantheon
+Group=mpantheon
+Restart=always
+WatchdogSec=25
+
+[Install]
+WantedBy=multi-user.target

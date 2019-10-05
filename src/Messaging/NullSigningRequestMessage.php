@@ -12,6 +12,6 @@ class NullSigningRequestMessage extends SigningRequestMessage
 {
     public function __construct()
     {
-        parent::__construct('inline', '');
+        parent::__construct('inline', '', '', '', null);
     }
 }

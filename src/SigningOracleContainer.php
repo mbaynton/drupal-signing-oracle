@@ -4,10 +4,14 @@
 namespace Drupal\SigningOracle;
 
 
-use Drupal\SigningOracle\Messaging\TempMessageProvider;
+use Drupal\SigningOracle\Messaging\ActiveMQMessageConsumer;
+use Drupal\SigningOracle\Messaging\ActiveMQMessageProducer;
 use Drupal\SigningOracle\Signing\SignifyExecutingSignerService;
 use Mekras\SystemD\Watchdog;
 use Pimple\Container;
+use Stomp\Client as StompClient;
+use Stomp\Network\Connection as StompConnection;
+use Stomp\StatefulStomp;
 use Symfony\Component\Yaml\Yaml;
 
 class SigningOracleContainer extends Container
@@ -32,24 +36,35 @@ class SigningOracleContainer extends Container
             return new Watchdog();
         };
 
-        /*
-        $this['incoming_sqs'] = function($c) {
-            $sqsConfig = $c['config']['sqs'];
-            return new SqsClient([
-                'profile' => 'default',
-                'region' => $sqsConfig['region'],
-                'version' => '2012-11-05',
-            ]);
-        };*/
+        $this['stomp_client'] = function($c) {
+            $config = $c['config']['messaging']['stomp'];
+            $connection = new StompConnection($config['brokerUri']);
+            $connection->setReadTimeout(10);
+            $client = new StompClient($connection);
+            if(! empty($config['username'] . $config['password'])) {
+                $client->setLogin($config['username'], $config['password']);
+            }
+            return new StatefulStomp($client);
+        };
 
         // Must implement MessageProviderInterface.
-        $this['message_provider'] = function ($c) {
-            return new TempMessageProvider();
+        $this['message_consumer'] = function ($c) {
+            /** @var StatefulStomp $stomp */
+            $stomp = $c['stomp_client'];
+            $config = $c['config']['messaging']['stomp'];
+            $stomp->subscribe("/queue/{$config['request-queue-name']}", null, 'client-individual');
+
+            return new ActiveMQMessageConsumer($stomp);
+        };
+
+        $this['message_producer'] = function ($c) {
+            return new ActiveMQMessageProducer($c['stomp_client']);
         };
 
         $this['queue_loop'] = function($c) {
             return new QueueLoopService(
-                $c['message_provider'],
+                $c['message_consumer'],
+                $c['message_producer'],
                 $c['signing_service'],
                 $c['sd_watchdog']
             );
