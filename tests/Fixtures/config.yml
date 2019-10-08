@@ -11,7 +11,3 @@ messaging:
     username: fred
     password: tuttle
     request-queue-name: SigningRequests
-
-sqs:
-  region: us-east-2
-  queue-url: https://sqs.us-east-2.amazonaws.com/521203535920/SigningOracleRequests

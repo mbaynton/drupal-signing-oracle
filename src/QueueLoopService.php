@@ -4,8 +4,6 @@
 namespace Drupal\SigningOracle;
 
 
-use Aws\Exception\AwsException;
-use Aws\Sqs\SqsClient;
 use Drupal\SigningOracle\Messaging\MessageConsumerInterface;
 use Drupal\SigningOracle\Messaging\MessageProducerInterface;
 use Drupal\SigningOracle\Messaging\MessagingException;
