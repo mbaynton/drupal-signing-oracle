@@ -5,6 +5,8 @@ namespace Drupal\SigningOracle\Signing;
 
 
 
+use Monolog\Logger;
+
 /**
  * Class SignifyExecutingSigner
  *
@@ -12,6 +14,11 @@ namespace Drupal\SigningOracle\Signing;
  */
 class SignifyExecutingSignerService implements SignerServiceInterface
 {
+    /**
+     * @var Logger
+     */
+    protected $app_logger;
+
     protected $signify_binary;
 
     protected $xpub_file;
@@ -26,30 +33,43 @@ class SignifyExecutingSignerService implements SignerServiceInterface
      *
      * @throws SigningException
      */
-    public function __construct(string $signify_binary, string $xpub_file, string $intermediate_secret_file)
+    public function __construct(Logger $app_logger, string $signify_binary, string $xpub_file, string $intermediate_secret_file)
     {
+        $this->app_logger = $app_logger;
         $this->signify_binary = $signify_binary;
         $this->xpub_file = $xpub_file;
         $this->intermediate_secret_file = $intermediate_secret_file;
 
         // Run a smoketest of the environment by signing something and verifying we get a csig file.
-        $smoketest_sign = $this->signString('hello world');
+        $exception = null;
+        $smoketest_sign = '';
+        try {
+            $smoketest_sign = $this->signString('hello world');
+        } catch (SigningException $e) {
+            $exception = $e;
+        }
         $matches = [];
         preg_match_all('|untrusted comment|', $smoketest_sign, $matches, PREG_PATTERN_ORDER);
         // A good csig has three "untrusted comment" lines.
-        if (count($matches[0]) !== 3) {
+        if ($exception !== null || count($matches[0]) !== 3) {
+            $this->app_logger->critical('Smoke test of exec-dependent signer failed. Check signing configuration?', ['exception' => $exception]);
+            if ($exception !== null) {
+                throw new SigningException('Smoke test of exec-dependent signer failed. Check signing configuration?', 0, $exception);
+            }
             throw new SigningException('Smoke test of exec-dependent signer failed. Check signing configuration?');
         }
+
+        $this->app_logger->debug('BSD signify execution based signing verified operational.');
     }
 
     /**
-     * Generates the signify signed data file by executing Signify and streaming stdin/stdout.
+     * Generates the signify signed data stream by executing Signify and streaming stdin/stdout.
      *
      * The utility of using streams is just to avoid moving php string values to/from the binary
      * via temp files. It doesn't help with memory usage and large messages under the current
      * implementation because we keep the method non-public and avoid packaging up the two
      * resources from proc_open() in a nice disposable Stream-type object; the public methods
-     * work in terms of strings.
+     * then just work in terms of strings.
      *
      * We aren't planning on signing massive messages, and the Signify format was never really
      * optimized for them anyway since the signature over the message occurs before the message.

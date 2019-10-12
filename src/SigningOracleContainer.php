@@ -4,6 +4,7 @@
 namespace Drupal\SigningOracle;
 
 
+use Cascade\Cascade;
 use Drupal\SigningOracle\Messaging\ActiveMQMessageConsumer;
 use Drupal\SigningOracle\Messaging\ActiveMQMessageProducer;
 use Drupal\SigningOracle\Signing\SignifyExecutingSignerService;
@@ -66,7 +67,9 @@ class SigningOracleContainer extends Container
                 $c['message_consumer'],
                 $c['message_producer'],
                 $c['signing_service'],
-                $c['sd_watchdog']
+                $c['sd_watchdog'],
+                $c['app_logger'],
+                $c['audit_logger']
             );
         };
 
@@ -74,10 +77,18 @@ class SigningOracleContainer extends Container
         $this['signing_service'] = function($c) {
             $config = $c['config']['signing'];
             return new SignifyExecutingSignerService(
+                $c['app_logger'],
                 $config['signify-binary'],
                 $config['keys']['int-xpub-key-file'],
                 $config['keys']['int-private-key-file']
             );
+        };
+
+        $this['app_logger'] = function ($c) {
+            return Cascade::getLogger('signing-oracle');
+        };
+        $this['audit_logger'] = function ($c) {
+            return Cascade::getLogger('signing-audit');
         };
     }
 }

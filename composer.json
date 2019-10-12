@@ -8,6 +8,7 @@
         "ulrichsg/getopt-php": "3.2.2",
         "mekras/php-systemd": "0.1.0",
         "stomp-php/stomp-php": "^4.5",
+        "theorchard/monolog-cascade": "0.5.1",
         "ext-json": "^1.6"
     },
     "require-dev": {

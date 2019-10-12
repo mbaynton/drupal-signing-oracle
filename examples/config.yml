@@ -1,0 +1,52 @@
+---
+signing:
+  signify-binary: /bin/signify-openbsd
+  keys:
+    int-private-key-file: /home/mpantheon/projects/drupal/infra/signing-oracle/tests/Fixtures/intermediate.sec
+    int-xpub-key-file: /home/mpantheon/projects/drupal/infra/signing-oracle/tests/Fixtures/intermediate.xpub
+
+messaging:
+  stomp:
+    brokerUri: ssl://b-ff20c86a-a4f6-4ce0-81d7-09709cbef30d-1.mq.us-east-2.amazonaws.com:61614
+    username: fred
+    password: tuttle
+    request-queue-name: SigningRequests
+
+# Logging
+loggers:
+  # Normal application log messages are sent on this channel.
+  signing-oracle:
+    handlers: [journal]
+    processors: [psr-message-replacement]
+
+  # Complete CSIGs of all payloads signed and metadata are sent on this channel.
+  # Consider that the log handler must succeed before delivery on the response queue.
+  signing-audit:
+    handlers: [audit-file]
+
+formatters:
+  journal:
+    class: Monolog\Formatter\LineFormatter
+    format: "%level_name%: %message% %context% %extra%\n"
+    ignoreEmptyContextAndExtra: true
+  audit-json:
+    class: Monolog\Formatter\JsonFormatter
+    batchMode: 2
+    appendNewline: true
+
+handlers:
+  journal:
+    class: Monolog\Handler\StreamHandler
+    # INFO logs each signing request
+    level: INFO
+    formatter: journal
+    stream: php://stdout
+  audit-file:
+    class: Monolog\Handler\StreamHandler
+    level: NOTICE
+    formatter: audit-json
+    stream: ./example_audit.log
+
+processors:
+  psr-message-replacement:
+    class: Monolog\Processor\PsrLogMessageProcessor

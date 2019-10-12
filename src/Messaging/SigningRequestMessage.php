@@ -50,4 +50,20 @@ class SigningRequestMessage
         $this->correlation_id = $correlation_id;
         $this->ack_handle = $ack_handle;
     }
+
+    /**
+     * Produces an array of strings containing message metadata information, but not its entire contents.
+     */
+    public function summarize() : array
+    {
+        $facts = [];
+        if (method_exists($this->ack_handle, 'getMessageId')) {
+            $facts['message-id'] = $this->ack_handle->getMessageId();
+        }
+        $facts['signable-payload-type'] = $this->signable_payload_type;
+        $facts['reply-to'] = $this->reply_to;
+        $facts['correlation-id'] = $this->correlation_id;
+
+        return array_filter($facts);
+    }
 }
