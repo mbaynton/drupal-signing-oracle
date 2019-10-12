@@ -4,6 +4,7 @@
 namespace Drupal\SigningOracle\Messaging;
 
 
+use Monolog\Logger;
 use Stomp\StatefulStomp;
 
 class ActiveMQMessageConsumer implements MessageConsumerInterface
@@ -14,15 +15,21 @@ class ActiveMQMessageConsumer implements MessageConsumerInterface
     protected $stomp;
 
     /**
+     * @var Logger $app_logger
+     */
+    protected $app_logger;
+
+    /**
      * ActiveMQMessageConsumer constructor.
      *
      * @param StatefulStomp $stomp
      *   A preconfigured, connected StatefulStomp subscribed to the correct
      *   queue with read timeout set.
      */
-    public function __construct(StatefulStomp $stomp)
+    public function __construct(StatefulStomp $stomp, Logger $app_logger)
     {
         $this->stomp = $stomp;
+        $this->app_logger = $app_logger;
     }
 
     public function getNextMessage(): SigningRequestMessage
@@ -34,16 +41,22 @@ class ActiveMQMessageConsumer implements MessageConsumerInterface
         }
 
         $headers = $frame->getHeaders();
+        $metadata = [];
         if (!empty($headers['type']) && $headers['type'] === 'application/json') {
             // Wrap the signable payload in json for future extensibility.
             $messageParts = json_decode($frame->getBody(), true);
             if ($messageParts === null || ! $this->messageJsonRequiredAttrs($messageParts)) {
                 // This message is not processable.
                 // Nack it now and return to QueueLoop.
+                $this->app_logger->error(
+                    'Request in json format was invalid or lacked required attributes. Examine DLQ message id {message-id}.',
+                    ['message-id' => $frame->getMessageId(), 'correlation-id' => $headers['correlation-id'] ?? '', 'reply-to' => $headers['reply-to'] ?? '']
+                );
                 $this->nack($frame);
                 return new NullSigningRequestMessage();
             }
             $signable_payload = $messageParts['signable-payload'];
+            $metadata = array_diff_key($messageParts, ['signable-payload' => 1]);
         } else {
             $signable_payload = $frame->getBody();
         }
@@ -53,7 +66,8 @@ class ActiveMQMessageConsumer implements MessageConsumerInterface
             $signable_payload,
             $headers['reply-to'] ?? '',
             $headers['correlation-id'] ?? '',
-            $frame
+            $frame,
+            $metadata
         );
     }
 

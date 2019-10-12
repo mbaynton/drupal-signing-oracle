@@ -42,13 +42,20 @@ class SigningRequestMessage
      */
     public $ack_handle;
 
-    public function __construct(string $signable_payload_type, string $signable_payload, string $reply_to, string $correlation_id, $ack_handle)
+    /**
+     * @var array
+     * An associative array of metadata about the request for logging/auditing purposes.
+     */
+    public $metadata_bag;
+
+    public function __construct(string $signable_payload_type, string $signable_payload, string $reply_to, string $correlation_id, $ack_handle, array $metadata_bag = [])
     {
         $this->signable_payload_type = $signable_payload_type;
         $this->signable_payload = $signable_payload;
         $this->reply_to = $reply_to;
         $this->correlation_id = $correlation_id;
         $this->ack_handle = $ack_handle;
+        $this->metadata_bag = $metadata_bag;
     }
 
     /**
@@ -64,6 +71,6 @@ class SigningRequestMessage
         $facts['reply-to'] = $this->reply_to;
         $facts['correlation-id'] = $this->correlation_id;
 
-        return array_filter($facts);
+        return array_filter($facts + $this->metadata_bag);
     }
 }

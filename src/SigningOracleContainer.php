@@ -55,11 +55,11 @@ class SigningOracleContainer extends Container
             $config = $c['config']['messaging']['stomp'];
             $stomp->subscribe("/queue/{$config['request-queue-name']}", null, 'client-individual');
 
-            return new ActiveMQMessageConsumer($stomp);
+            return new ActiveMQMessageConsumer($stomp, $c['app_logger']);
         };
 
         $this['message_producer'] = function ($c) {
-            return new ActiveMQMessageProducer($c['stomp_client']);
+            return new ActiveMQMessageProducer($c['stomp_client'], $c['app_logger']);
         };
 
         $this['queue_loop'] = function($c) {

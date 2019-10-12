@@ -98,7 +98,7 @@ class QueueLoopService
             $e = null;
             $is_audited = false;
             try {
-                $is_audited = $this->audit_logger->notice($csig);
+                $is_audited = $this->audit_logger->notice($csig, $queueMessage->summarize());
             } catch (\Exception $e) {}
             finally {
                 if ($e !== null || ! $is_audited) {
